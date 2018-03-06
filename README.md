@@ -5,6 +5,8 @@
 This script checks a reply HTTP cord of the target URL.
 Target URL list must be written separated by newline.
 
+If response HTTP Code is Redirect, Then this script checks next URLs.
+
 ## Usage
 
 ```
