@@ -14,8 +14,8 @@ TARGET_FILE=$1
 CUR_DATE=`date "+%Y%m%d%H%M%S"`
 
 getHttpCd () {
-  result=`curl -v $1 2>&1`
-  resCd=`echo $result | grep -o "HTTP/2 [0-9]\{3\}" | grep -o "[0-9]\{3\}"`
+  result=`curl -v $1 2>&1 -o /dev/null`
+  resCd=`echo $result | grep -o "< HTTP/\(1.1\|2\) [0-9]\{3\}" | grep -o "[0-9]\{3\}"`
   if [ $redirect_cnt -gt 0 ]; then
     for i in `seq $redirect_cnt`
     do
@@ -24,7 +24,7 @@ getHttpCd () {
     printf ">"
   fi
   echo "$resCd : $1"
-  if [ $resCd -eq 301 ] || [ $resCd -eq 302 ] ; then
+  if [[ $resCd -eq 301 ]] || [[ $resCd -eq 302 ]] ; then
     redirect_cnt=`expr $redirect_cnt + 1`
     next_url=`echo $result | grep -o "location: https://[0-9a-zA-Z\.-_/]*" | grep -o "https://[0-9a-zA-Z\.-_/]*" | xargs`
     getHttpCd $next_url
